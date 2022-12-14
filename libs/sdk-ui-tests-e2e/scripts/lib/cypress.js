@@ -45,7 +45,7 @@ export function runCypress(configParams = {}) {
     cypressProps["CYPRESS_updateSnapshots"] = updateSnapshots;
 
     if (authorization.credentials) {
-        cypressProps["CYPRESS_USERNAME"] = authorization.credentials.userName;
+        cypressProps["CYPRESS_USER_NAME"] = authorization.credentials.userName;
         cypressProps["CYPRESS_PASSWORD"] = authorization.credentials.password;
     }
 
@@ -108,6 +108,7 @@ export function runCypress(configParams = {}) {
         cypressProps["CYPRESS_TIGER_API_TOKEN"] = tigerApiToken;
     }
 
+    console.log("Going to run cypress with args: ", args);
     const cypressProcess = spawn("cypress", args, {
         env: {
             ...process.env,
