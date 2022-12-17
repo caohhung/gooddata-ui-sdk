@@ -10,26 +10,18 @@ CYPRESS_IMAGE='020413372491.dkr.ecr.us-east-1.amazonaws.com/tools/gdc-frontend-c
 
 CYPRESS_HOST="https://${CYPRESS_HOST}"
 
-echo "⭐️ 1/7 Install project dependencies and build it to dist"
-docker run \
-    -e USERID=$(id -u $USER) \
-    -e FORCE_COLOR=0 \
-    -w /workspace \
-    -v "$(pwd)":/workspace \
-    -t $BUILD_IMAGE \
-    sh -c "npm config set '//registry.npmjs.org/:_authToken' $NPM_TOKEN && yarn install --frozen-lockfile && yarn dist" || exit 1
 
-echo "⭐️ 2/7 install test project dependencies"
-docker run \
-    -e USERID=$(id -u $USER) \
-    -e FORCE_COLOR=0 \
-    -w /workspace/test_new \
-    -v "$(pwd)":/workspace \
-    -t $BUILD_IMAGE \
-    sh -c "npm config set '//registry.npmjs.org/:_authToken' $NPM_TOKEN && yarn install --frozen-lockfile" || exit 1
+# echo "⭐️ 1/7 Install project dependencies and build it to dist"
+# docker run \
+#     -e USERID=$(id -u $USER) \
+#     -e FORCE_COLOR=0 \
+#     -w /workspace \
+#     -v "$(pwd)":/workspace \
+#     -t $BUILD_IMAGE \
+#     sh -c "yarn install --frozen-lockfile" || exit 1
 
 echo "⭐️ 3/7 create reference workspace on the host"
-chmod +x ./test_new/reference_workspace/create_ref_workspace.js
+chmod +x ./reference_workspace/create_ref_workspace.js
 docker run --entrypoint reference_workspace/create_ref_workspace.js \
     -e USERID=$(id -u $USER) \
     -e FORCE_COLOR=0 \
@@ -41,7 +33,7 @@ docker run --entrypoint reference_workspace/create_ref_workspace.js \
     -e FIXTURE_TYPE=goodsales \
     -e NO_COLOR=1 \
     -e BUILD_URL=$BUILD_URL \
-    -w /workspace/test_new \
+    -w /workspace \
     -v "$(pwd)":/workspace \
     $CYPRESS_IMAGE
 
@@ -53,11 +45,8 @@ trap "docker rmi --force $IMAGE_ID || true" EXIT
 docker build --file ./Dockerfile_local -t $IMAGE_ID .
 
 echo "⭐️ 5/7 create new recording (host: $CYPRESS_HOST, test: $CYPRESS_RECORDED_TEST)"
-cd test_new
-rm -rf ./recordings/mappings
+rm -rf ./recordings/mappings/BEAR/*
 
-USER_UID=$(id -u $USER) \
-USER_GID=$(id -g $USER) \
 IMAGE_ID=$IMAGE_ID \
 HOST=$CYPRESS_HOST \
 USER_NAME=$TEST_USER_NAME \
@@ -66,15 +55,15 @@ SDK_BACKEND=BEAR \
 FILTER=$CYPRESS_RECORDED_TEST \
 CYPRESS_TEST_TAGS=pre-merge_isolated_bear \
 NO_COLOR=1 \
-ISOLATED_MODE=record \
+MODE=record \
 ./scripts/run_isolated.sh
 
 #back to root now
 cd ..
 
 echo "⭐️ 6/7 delete reference workspace on the host"
-chmod +x ./test_new/reference_workspace/delete_ref_workspace.js
-docker run --entrypoint reference_workspace/delete_ref_workspace.js \
+chmod +x ./reference_workspace/delete_ref_workspace.js
+docker run --entrypoint "reference_workspace/delete_ref_workspace.js && cat .env" \
     -e USERID=$(id -u $USER) \
     -e FORCE_COLOR=0 \
     -e HOST=$CYPRESS_HOST \
@@ -83,16 +72,16 @@ docker run --entrypoint reference_workspace/delete_ref_workspace.js \
     -e SDK_BACKEND=BEAR \
     -e NO_COLOR=1 \
     -e BUILD_URL=$BUILD_URL \
-    -w /workspace/test_new \
+    -w /workspace \
     -v "$(pwd)":/workspace \
     $CYPRESS_IMAGE
 
 echo "⭐️ 7/7 create file with test results that will be posted to pull request by the CI job"
-chmod +x ./test_new/scripts/create_github_report.js
+chmod +x ./scripts/create_github_report.js
 docker run --entrypoint scripts/create_github_report.js \
     -e FORCE_COLOR=0 \
     -e NO_COLOR=1 \
     -e BUILD_URL=$BUILD_URL \
-    -w /workspace/test_new \
+    -w /workspace \
     -v "$(pwd)":/workspace \
     $CYPRESS_IMAGE

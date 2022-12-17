@@ -55,6 +55,7 @@ async function main() {
             ? { specFilesFilter: FILTER.split(",").map((x) => (x.endsWith(".spec.ts") ? x : x + ".spec.ts")) }
             : {};
 
+        console.log("Debug 1", process.env);
         if (!CYPRESS_TEST_TAGS) {
             process.stderr.write("Isolated tests need CYPRESS_TEST_TAGS\n");
             process.exit(1);
@@ -93,7 +94,7 @@ async function main() {
                 };
             }
         }
-
+        console.log("Debug 2", JSON.stringify(authorization));
         if (recording) {
             // deleteRecordings(specFilesFilter, SDK_BACKEND, CYPRESS_TEST_TAGS.split(","));
             // The whole recording dir will be purged anyway in scripts/run-cypress-recording-*.sh
@@ -115,7 +116,7 @@ async function main() {
         } else {
             testWorkspaceId = getRecordingsWorkspaceId();
         }
-
+        console.log("Debug 3", testWorkspaceId);
         const TESTS_DIR = "./cypress/integration";
         const files = getAllFiles(TESTS_DIR, specFilesFilter.specFilesFilter);
         execSync(`rm -rf ./cypress/results`);

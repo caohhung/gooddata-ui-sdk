@@ -2,7 +2,7 @@ version: "3.7"
 services:
     isolated-tests:
         image: cypress/included:10.10.0
-        entrypoint: node ./scripts/run_isolated_compose.js --$MODE --filter=$FILTER
+        entrypoint: node ./scripts/run_isolated_compose.js --record --filter=$FILTER
         volumes:
             - ./:/sdk-ui-tests-e2e:rw
         working_dir: /sdk-ui-tests-e2e
@@ -12,13 +12,16 @@ services:
             - backend-mock
         environment:
             - CYPRESS_HOST=http://gooddata-ui-sdk-scenarios:9500
+            - HOST
+            - USER_NAME
+            - PASSWORD
+            - TEST_WORKSPACE_ID
             - NO_COLOR
             - BUILD_URL
             - SDK_BACKEND
             - CYPRESS_TEST_TAGS
-            - ZUUL_PIPELINE
-            - MODE
             - FILTER
+            - DEBUG='cypress:*'
 
     gooddata-ui-sdk-scenarios:
         image: $IMAGE_ID

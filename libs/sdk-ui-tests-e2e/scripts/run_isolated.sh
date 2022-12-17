@@ -8,7 +8,7 @@
 # SDK_BACKEND BEAR | TIGER (mandatory)
 # CYPRESS_TEST_TAGS (mandatory) list of tags compatible with chosen backend
 # MODE record | test (optional, defaults to test)
-# TEST_WORKSPACE_ID (mandatory when ISOLATED_MODE is record) workspace created for recording
+# TEST_WORKSPACE_ID (mandatory when MODE is record) workspace created for recording
 #
 # Note that you need to make sure that the tests you choose by the tags can
 # run against the SDK_BACKEND you provide
@@ -34,12 +34,12 @@ fi
 echo "Running against $SDK_BACKEND with mode $MODE"
 echo "Filtering by tags: $CYPRESS_TEST_TAGS"
 
-COMPOSE_FILE="docker-compose-isolated.yaml"
+[[ $MODE = "record" ]] && COMPOSE_FILE="docker-compose-isolated-record.yaml" || COMPOSE_FILE="docker-compose-isolated.yaml"
 
 if [ -z "$IMAGE_ID" ]; then
     echo "Build docker image with what's already in the 'scenarios/build' folder, using IMAGE_ID=gooddata-ui-sdk"
-    docker build --file ../Dockerfile_local -t gooddata-ui-sdk ..
     export IMAGE_ID=gooddata-ui-sdk
+    docker build -f Dockerfile_local -t $IMAGE_ID .
 else
     echo "Skipping image build, using given image in IMAGE_ID: $IMAGE_ID"
 fi
