@@ -18,6 +18,9 @@ module.exports = async (env, argv) => {
         process.env.TEST_WORKSPACE_ID,
         process.env.SDK_BACKEND,
     ];
+    if (!process.env.TEST_WORKSPACE_ID) {
+        throw "TEST_WORKSPACE_ID is not found in environment.";
+    }
     console.log(
         "Backend URI:",
         backendUrl,
