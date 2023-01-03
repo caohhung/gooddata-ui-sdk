@@ -64,7 +64,7 @@ $_RUSH install
 $_RUSH build -t sdk-ui-tests-e2e
 
 echo "⭐️ 3/8 create reference workspace on the SDK_BACKEND=$SDK_BACKEND"
- _docker_run node reference_workspace/create_ref_workspace.js
+$_RUSHX libs/sdk-ui-tests-e2e create-ref-workspace
 
 echo "⭐️ 4/8 build gooddata-ui-sdk-scenarios"
 $_RUSHX libs/sdk-ui-tests-e2e build-scenarios
@@ -83,7 +83,7 @@ MODE=record NO_COLOR=1 docker-compose -f docker-compose-isolated.yaml up \
     --force-recreate --always-recreate-deps --renew-anon-volumes --no-color
 
 echo "⭐️ 7/8 delete reference workspace on the host"
- _docker_run node reference_workspace/delete_ref_workspace.js
+$_RUSHX libs/sdk-ui-tests-e2e delete-ref-workspace
 
 
 echo "⭐️ 8/8 create file with test results that will be posted to pull request by the CI job"

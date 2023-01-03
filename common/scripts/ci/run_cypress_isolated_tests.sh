@@ -15,7 +15,6 @@ sdk_backend=$(tr <<< $SDK_BACKEND '[:upper:]' '[:lower:]')
 pushd $E2E_TEST_DIR
 cat > .env <<-EOF
 SDK_BACKEND=${SDK_BACKEND:-BEAR}
-TEST_WORKSPACE_ID=c76e0537d0614abb0027f7c992656b964922506f
 HOST=dummy.gooddata.com
 CYPRESS_TEST_TAGS=pre-merge_isolated_${sdk_backend}
 FILTER=${FILTER:-}
@@ -23,6 +22,7 @@ EOF
 
 $_RUSH install
 $_RUSH build -t sdk-ui-tests-e2e
+$_RUSHX libs/sdk-ui-tests-e2e prepare-recording-workspace-id
 $_RUSHX libs/sdk-ui-tests-e2e build-scenarios
 
 # Use Dockerfile_local as scenarios have been build in previous steps
