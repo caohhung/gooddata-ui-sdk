@@ -21,7 +21,7 @@ sdk_backend=$(tr <<< $SDK_BACKEND '[:upper:]' '[:lower:]')
 # EOF
 
 $_RUSH install
-$_RUSH build -t sdk-ui-tests-e2e
+$_RUSH rebuild -t sdk-ui-tests-e2e
 # $_RUSHX libs/sdk-ui-tests-e2e prepare-recording-workspace-id
 # $_RUSHX libs/sdk-ui-tests-e2e build-scenarios
 
