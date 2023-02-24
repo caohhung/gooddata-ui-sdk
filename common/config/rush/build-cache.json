@@ -1,0 +1,12 @@
+{
+  // "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/build-cache.schema.json",
+  "buildCacheEnabled": true,
+  "cacheProvider": "local-only",
+
+  // "cacheProvider": "filesystem",
+  // *
+  //  * A list of folder names under each project root that should be cached. These folders should not be tracked by git.
+   
+  // "projectOutputFolderNames": ["lib", "dist"]
+
+}
