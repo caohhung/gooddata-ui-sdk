@@ -27,6 +27,14 @@ else
   net_param="--net ${WIREMOCK_NET} --net-alias tests"
 fi
 
+if [ -n $JENKINS_URL ] && [ -n $CACHE_DIR ] ; then
+  rush_temp_param="--volume $CACHE_DIR:/workspace/common/temp"
+else
+  rush_temp_param=""
+fi
+
+echo "rush_temp_param=$rush_temp_param"
+
 docker run \
   --env CI \
   --env WIREMOCK_NET \
@@ -37,6 +45,7 @@ docker run \
   --rm \
   ${net_param} \
   --volume ${ROOT_DIR}:/workspace:Z \
+  ${rush_temp_param} \
   -u $(id -u ${USER}):$(id -g ${USER}) \
   -w /workspace \
   ${IMAGE} \
