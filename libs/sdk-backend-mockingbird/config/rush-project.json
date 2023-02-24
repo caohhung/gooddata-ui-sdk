@@ -1,0 +1,20 @@
+{
+    "operationSettings": [
+        // formerly phaseOptions
+        {
+            "operationName": "build",
+
+            // The "build" operation's output folder names were previously defined
+            // in the top-level `projectOutputFolderNames` property.
+            "outputFolderNames": ["output-folder-1", "output-folder-2"]
+        },
+        {
+            "operationName": "_phase:build", // formerly phaseName
+            "outputFolderNames": ["output-folder-a", "output-folder-b"]
+        },
+        {
+            "operationName": "test",
+            "disableBuildCacheForOperation": true
+        }
+    ]
+}
