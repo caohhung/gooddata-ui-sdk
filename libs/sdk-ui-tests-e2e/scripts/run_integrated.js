@@ -36,6 +36,10 @@ async function main() {
             TIGER_API_TOKEN_NAME_PREFIX,
             CYPRESS_HOST,
         } = process.env;
+        console.log("CYPRESS_HOST: ", CYPRESS_HOST);
+        console.log("TEST_WORKSPACE_ID: ", TEST_WORKSPACE_ID);
+        console.log("TIGER_DATASOURCES_PASSWORD: ", TIGER_DATASOURCES_PASSWORD);
+        console.log("SDK_BACKEND: ", SDK_BACKEND);
 
         if (!TEST_WORKSPACE_ID) {
             process.stderr.write("Integrated tests need TEST_WORKSPACE_ID\n");

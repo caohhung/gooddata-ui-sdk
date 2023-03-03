@@ -5,6 +5,7 @@ services:
         image: $IMAGE_ID
         environment:
             - TEST_BACKEND=${HOST}
+            # - TEST_BACKEND_DOMAIN=${HOST//http*:\/\//}
         volumes:
             - ./nginx/templates:/etc/nginx/templates/
         ports:
